@@ -77,53 +77,6 @@ app.get('/callback/subscribe', function(req, res){
 
 // Instagram POSTs messages here letting the application know a new picture was posted.
 app.post('/callback/subscribe', function(req, res){
-	var subscription_data = req.body;
-	console.log("New pictures are available for: ");
-
-	// For every subscription...
-	async.forEach(
-		subscription_data,
-		function(item){
-			// If the subscription has an object_id... (usually the object_id is the tag)
-			if (item.object_id){
-				var tag = item.object_id;
-				// Log it...
-				console.log(tag);
-				// And then get the most recent picture for that tag...
-				Instagram.tags.recent({
-					name: tag,
-					complete: function(data, pagination){
-						var _id = data[0].id,
-							url = data[0].images.low_resolution.url;
-
-						//Save in the DB
-						mongodb.connect(host, function(err, db) {
-							if(err) { return console.dir(err); }
-							var collection = db.collection('instagrams');
-							
-							// Prepare the document
-							var docs = [{_id: data[0].id,
-										url: url,
-										tag: tag}];
-							
-							var exists = collection.findOne({_id:data[0].id});
-							
-							// If the document does not exist...
-							if(!exists) {
-								// ...insert it in the DB...
-								collection.insert(docs);
-								// ...and finally tell the world about it.
-								io.sockets.emit('new_pictures', url);
-							}
-						});
-					}
-				});
-			}
-		},
-		function(err){
-
-		}
-	);
 	res.end("ok");
 });
 
