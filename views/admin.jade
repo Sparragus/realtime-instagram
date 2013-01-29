@@ -1,0 +1,21 @@
+!!! 5
+html(lang='en')  
+	head
+		title Instagram - Admin's Panel
+		script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js")
+	body
+		h1 RealTime Instagram - Admin's Panel
+		h2 Subscriptions
+		each tagId, tag in subscriptions
+			li= tag
+				a(href="/unsubscribe/#{tagId}") delete?
+		form(name="input", action="/subscribe", method="post")
+			| New tag:
+			input(type="text", name="subscription[tag]")
+			input(type="submit", value="Add new subscription")
+
+		//- h2 Most recent pictures:
+		//- each pictureURL, pictureId in pictures
+		//- 	li 
+		//- 		img(src=pictureURL)
+		//- 		a(href="#delete-#{pictureId}") delete?
