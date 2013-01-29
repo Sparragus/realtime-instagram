@@ -21,26 +21,27 @@ var dbUser = 'sparragus',
 	host = format("mongodb://%s:%s@linus.mongohq.com:%d/%s", dbUser, dbPassword, dbPort, dbName);
 
 // Set Instagram keys and global callback url.
-// Instagram.set('client_id', '1e6e75e94695423285b11b68181bf5e6');
-// Instagram.set('client_secret', 'c54e930a781844228bc7ec6060e73547');
-// Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
+Instagram.set('client_id', '1e6e75e94695423285b11b68181bf5e6');
+Instagram.set('client_secret', 'c54e930a781844228bc7ec6060e73547');
+Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
 
 // REAL App credentials
-Instagram.set('client_id', 'cf25f26e869c42c3aa5f91342e9803ed');
-Instagram.set('client_secret', '6b0cde9607be45b2a934e68f4f409965');
-Instagram.set('callback_url', 'http://tc-instagram.herokuapp.com/callback');
+// Instagram.set('client_id', 'cf25f26e869c42c3aa5f91342e9803ed');
+// Instagram.set('client_secret', '6b0cde9607be45b2a934e68f4f409965');
+// Instagram.set('callback_url', 'http://tc-instagram.herokuapp.com/callback');
 
 app.get('/', function(request, response) {
 	res.render("index");
 });
 
-app.get('admin', function(req, res){
+app.get('/admin', function(req, res){
 	Instagram.subscriptions.list({
 		complete: function(subs, pagination){
 			console.log("Instagram subscriptions:");
 			subscriptions = {};
-			subs.data.forEach(
+			subs.forEach(
 				function(item) {
+					console.log(item);
 					if(item.object_id){
 						subscriptions[item.object_id] = item.id;
 					}
@@ -54,18 +55,28 @@ app.get('admin', function(req, res){
 			});
 		}
 	});
-	// res.render('admin', {
-	// 	subscriptions: {someTag: "someTagID"}
-	// });
+});
+
+app.post('/subscribe', function(req,res){
+	var tag = req.body.subscription.tag;
+	// Subscribe...
+	Instagram.subscriptions.subscribe({
+		object: 'tag',
+		object_id: tag,
+		callback_url: "http://sparragus-test.herokuapp.com/callback/subscribe"
+	});
+
+	// ...and then return back to the admin panel
+	res.redirect("/admin");
 });
 
 // Callback for subscriptions. Instragram.js takes care of the handshake. Magic! :O
-app.get('/subscribe', function(req, res){
+app.get('/callback/subscribe', function(req, res){
   Instagram.subscriptions.handshake(req, res);
 });
 
 // Instagram POSTs messages here letting the application know a new picture was posted.
-app.post('/subscribe', function(req, res){
+app.post('/callback/subscribe', function(req, res){
 	var subscription_data = req.body;
 	console.log("New pictures are available for: ");
 
@@ -114,6 +125,15 @@ app.post('/subscribe', function(req, res){
 		}
 	);
 	res.end("ok");
+});
+
+app.get('/unsubscribe/:subscriptionID', function(req,res){
+	// If no object_id is passed, unsubscribe from everything.
+	var subscriptionID = req.params.subscriptionID;
+	if(subscriptionID) {
+		Instagram.subscriptions.unsubscribe({ id: subscriptionID });
+	}
+	res.redirect('/admin');
 });
 
 var port = process.env.PORT || 5000;
