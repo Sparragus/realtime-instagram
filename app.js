@@ -30,30 +30,62 @@ Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
 // Instagram.set('client_secret', '6b0cde9607be45b2a934e68f4f409965');
 // Instagram.set('callback_url', 'http://tc-instagram.herokuapp.com/callback');
 
+var getSubcriptions = function(){
+	var subscriptions = {};
+
+	console.log("Fetching subscriptions");
+	var subs = Instagram.subscriptions.list({
+		complete: function(subs, pagination){
+		}
+	});
+	console.log("Fetched subscriptions.");
+
+	subs.forEach(
+		function(item) {
+			console.log(item);
+			if(item.object_id){
+				subscriptions[item.object_id] = item.id;
+			}
+		}
+	);
+	
+	return subscriptions;
+};
+
+var getInstagrams = function(tag) {
+	var instagrams = [];
+
+	Instagram.tags.recent({
+		name: tag,
+		complete: function(data, pagination){
+			data.forEach(function(instagram){
+				instagrams.push(instagram.images.low_resolution.url);
+			});
+			return instagrams;
+		}
+	});
+};
+
+
 app.get('/', function(request, response) {
-	res.render("index");
+	var subcriptions = getSubcriptions(),
+		instagrams = [];
+
+	for (var tag in subcriptions) {
+		if (subcriptions.hasOwnProperty(tag)) {
+			instagrams.concat(getInstagrams(tag));
+		}
+	}
+
+	res.render("index", {
+		instagrams: instagrams
+	});
 });
 
 app.get('/admin', function(req, res){
-	Instagram.subscriptions.list({
-		complete: function(subs, pagination){
-			console.log("Instagram subscriptions:");
-			subscriptions = {};
-			subs.forEach(
-				function(item) {
-					console.log(item);
-					if(item.object_id){
-						subscriptions[item.object_id] = item.id;
-					}
-				},
-				function(err) {
-
-				}
-			);
-			res.render('admin', {
-				'subscriptions': subscriptions
-			});
-		}
+	var subcriptions = getSubcriptions();
+	res.render('admin', {
+		'subscriptions': subscriptions
 	});
 });
 
@@ -63,7 +95,7 @@ app.post('/subscribe', function(req,res){
 	Instagram.subscriptions.subscribe({
 		object: 'tag',
 		object_id: tag,
-		callback_url: "http://sparragus-test.herokuapp.com/callback/subscribe"
+		callback_url: "http://sparragus-test.herokuapp.com/callback/realtime"
 	});
 
 	// ...and then return back to the admin panel
@@ -71,12 +103,12 @@ app.post('/subscribe', function(req,res){
 });
 
 // Callback for subscriptions. Instragram.js takes care of the handshake. Magic! :O
-app.get('/callback/subscribe', function(req, res){
+app.get('/callback/realtime', function(req, res){
   Instagram.subscriptions.handshake(req, res);
 });
 
 // Instagram POSTs messages here letting the application know a new picture was posted.
-app.post('/callback/subscribe', function(req, res){
+app.post('/callback/realtime', function(req, res){
 	res.end("ok");
 });
 
