@@ -31,22 +31,21 @@ Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
 // Instagram.set('callback_url', 'http://tc-instagram.herokuapp.com/callback');
 
 var getSubcriptions = function(){
-	var subscriptions = {};
+	var subscriptions = {},
+		subs;
 
 	console.log("Fetching subscriptions");
-	var subs = false;
-	Instagram.subscriptions.list({
+	var dummy = Instagram.subscriptions.list({
 		complete: function(result, pagination){
-			console.log(result);
 			subs = result;
 		}
 	});
 	console.log("Fetched subscriptions.");
-
+	
 	if(subs){
 		subs.forEach(
 			function(item) {
-				console.log(item);
+				console.log("fetched sub: " + JSON.stringify(item));
 				if(item.object_id){
 					subscriptions[item.object_id] = item.id;
 				}
