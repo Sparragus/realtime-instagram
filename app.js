@@ -34,10 +34,13 @@ var getSubcriptions = function(){
 	var subscriptions = {};
 
 	console.log("Fetching subscriptions");
-	var subs = Instagram.subscriptions.list({
-		complete: function(subs, pagination){
+	var subs = false;
+	Instagram.subscriptions.list({
+		complete: function(result, pagination){
+			subs = result;
 		}
 	});
+	while(!subs){}
 	console.log("Fetched subscriptions.");
 
 	subs.forEach(
@@ -48,7 +51,7 @@ var getSubcriptions = function(){
 			}
 		}
 	);
-	
+
 	return subscriptions;
 };
 
@@ -68,7 +71,7 @@ var getInstagrams = function(tag) {
 
 
 app.get('/', function(request, response) {
-	var subcriptions = getSubcriptions(),
+	var subscriptions = getSubcriptions(),
 		instagrams = [];
 
 	for (var tag in subcriptions) {
