@@ -37,20 +37,22 @@ var getSubcriptions = function(){
 	var subs = false;
 	Instagram.subscriptions.list({
 		complete: function(result, pagination){
+			console.log(result);
 			subs = result;
 		}
 	});
-	while(!subs){}
 	console.log("Fetched subscriptions.");
 
-	subs.forEach(
-		function(item) {
-			console.log(item);
-			if(item.object_id){
-				subscriptions[item.object_id] = item.id;
+	if(subs){
+		subs.forEach(
+			function(item) {
+				console.log(item);
+				if(item.object_id){
+					subscriptions[item.object_id] = item.id;
+				}
 			}
-		}
-	);
+		);
+	}
 
 	return subscriptions;
 };
@@ -86,7 +88,7 @@ app.get('/', function(request, response) {
 });
 
 app.get('/admin', function(req, res){
-	var subcriptions = getSubcriptions();
+	var subscriptions = getSubcriptions();
 	res.render('admin', {
 		'subscriptions': subscriptions
 	});
