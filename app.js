@@ -12,6 +12,9 @@ var app = express.createServer(express.logger());
 app.set('view engine', 'jade');
 app.set('view options', {layout: false});
 app.set('views', __dirname + '/views');
+
+app.use("/styles", express.static(__dirname + '/styles'));
+
 // Allows neat parsing of POST parameters.
 app.use(express.bodyParser());
 
