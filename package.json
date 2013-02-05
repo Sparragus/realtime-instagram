@@ -6,6 +6,7 @@
     "mongodb": "*",
     "jade": "0.27.x",    
     "socket.io": "0.9.x",
+    "async": "0.1.x",
     "instagram-node-lib": "0.1.x"
   },
   "engines": {

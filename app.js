@@ -2,6 +2,7 @@ var express = require('express'),
 	io = require('socket.io'),
 	mongodb = require('mongodb'),
 	Instagram = require('instagram-node-lib'),
+	async = require('async'),
 	format = require('util').format;
 
 
