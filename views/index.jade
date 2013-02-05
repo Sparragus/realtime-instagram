@@ -8,7 +8,7 @@ head
 	script
 		var socket = io.connect('http://sparragus-test.herokuapp.com');
 		socket.on('new_pictures', function (data) {
-			//- console.log(data);
+			console.log(data);
 			$(document.body).append("<img src=\"" + data + "\">");
 		});
 body
