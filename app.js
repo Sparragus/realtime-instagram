@@ -1,4 +1,5 @@
 var express = require('express'),
+	io = require('socket.io'),
 	mongodb = require('mongodb'),
 	Instagram = require('instagram-node-lib'),
 	format = require('util').format;
@@ -12,6 +13,14 @@ app.set('view options', {layout: false});
 app.set('views', __dirname + '/views');
 // Allows neat parsing of POST parameters.
 app.use(express.bodyParser());
+
+// Configure socket.io to work with Heroku.
+io = io.listen(app);
+io.configure(function () {
+	// Heroku doesn't support websockets yet. Must use long-polling
+	io.set("transports", ["xhr-polling"]);
+	io.set("polling duration", 10);
+});
 
 // DB Params
 var dbUser = 'sparragus',
@@ -30,67 +39,38 @@ Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
 // Instagram.set('client_secret', '6b0cde9607be45b2a934e68f4f409965');
 // Instagram.set('callback_url', 'http://tc-instagram.herokuapp.com/callback');
 
-var getSubcriptions = function(){
-	var subscriptions = {},
-		subs;
-
-	console.log("Fetching subscriptions");
-	var dummy = Instagram.subscriptions.list({
-		complete: function(result, pagination){
-			subs = result;
-		}
-	});
-	console.log("Fetched subscriptions.");
-	
-	if(subs){
-		subs.forEach(
-			function(item) {
-				console.log("fetched sub: " + JSON.stringify(item));
-				if(item.object_id){
-					subscriptions[item.object_id] = item.id;
-				}
-			}
-		);
-	}
-
-	return subscriptions;
-};
-
-var getInstagrams = function(tag) {
-	var instagrams = [];
-
+app.get('/', function(req, res) {
+	var instagrams = {};
 	Instagram.tags.recent({
-		name: tag,
-		complete: function(data, pagination){
-			data.forEach(function(instagram){
-				instagrams.push(instagram.images.low_resolution.url);
+		name: 'cats',
+		complete: function(result, pagination) {
+			result.forEach(function(item){
+				instagrams[item.id] = item.images.standard_resolution.url;
 			});
-			return instagrams;
+
+			res.render("index", {
+				instagrams: instagrams
+			});
 		}
-	});
-};
-
-
-app.get('/', function(request, response) {
-	var subscriptions = getSubcriptions(),
-		instagrams = [];
-
-	for (var tag in subcriptions) {
-		if (subcriptions.hasOwnProperty(tag)) {
-			instagrams.concat(getInstagrams(tag));
-		}
-	}
-
-	res.render("index", {
-		instagrams: instagrams
 	});
 });
 
 app.get('/admin', function(req, res){
-	var subscriptions = getSubcriptions();
-	res.render('admin', {
-		'subscriptions': subscriptions
+	var subscriptions = {};
+
+	console.log("Fetching subscriptions");
+	Instagram.subscriptions.list({
+		complete: function(result, pagination){
+			result.forEach(function(item){
+				subscriptions[item.object_id] = item.id;
+			});
+			console.log(subscriptions);
+			res.render('admin', {
+				'subscriptions': subscriptions
+			});
+		}
 	});
+	console.log("Fetched subscriptions.");
 });
 
 app.post('/subscribe', function(req,res){
@@ -113,12 +93,40 @@ app.get('/callback/realtime', function(req, res){
 
 // Instagram POSTs messages here letting the application know a new picture was posted.
 app.post('/callback/realtime', function(req, res){
+	var subscription_data = req.body;
+	console.log("New pictures are available for: ");
+
+	// For every subscription...
+	async.forEach(
+		subscription_data,
+		function(item){
+			// If the subscription has an object_id... (usually the object_id is the tag)
+			if(item.object_id){
+				var tag = item.object_id;
+				// Log it...
+				console.log(tag);
+				// And then get the most recent picture for that tag...
+				Instagram.tags.recent({
+					name: tag,
+					complete: function(data, pagination){
+						// And finally tell the world about it...
+						var most_recent_picture_url = data[0].images.low_resolution.url;
+						io.sockets.emit('new_pictures', most_recent_picture_url);
+					}
+				});
+			}
+		},
+		function(err){
+
+		}
+	);
 	res.end("ok");
 });
 
 app.get('/unsubscribe/:subscriptionID', function(req,res){
 	// If no object_id is passed, unsubscribe from everything.
 	var subscriptionID = req.params.subscriptionID;
+	console.log("SubsID = " + subscriptionID);
 	if(subscriptionID) {
 		Instagram.subscriptions.unsubscribe({ id: subscriptionID });
 	}

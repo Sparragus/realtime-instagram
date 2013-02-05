@@ -1,11 +1,19 @@
 !!! 5
-html(lang=en)
+html(lang='en')
 head
 	title Instagram - Admin' Panel
+	script(src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js")
+	script(src="socket.io/socket.io.js")
+	script
+		var socket = io.connect('http://sparragus-test.herokuapp.com');
+		socket.on('new_pictures', function (data) {
+			//- console.log(data);
+			$(document.body).append("<img src=\"" + data + "\">");
+		});
 body
 	#container
 		h1 Instagram Pictures
 		#pictures	
-			each instagram in instagrams
+			each instagramURL, instagramID in instagrams
 				li
-					img(src=#{instagram})
+					img(src="#{instagramURL}")
