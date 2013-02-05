@@ -1,0 +1,12 @@
+body {
+	background-color: black;
+}
+
+li {
+	list-style-type: none;
+	display: inline;
+}
+
+li img {
+	margin: 10px 10px;
+}
