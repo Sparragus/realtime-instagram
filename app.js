@@ -140,11 +140,14 @@ app.get('/unsubscribe/:subscriptionID', function(req,res){
 	res.redirect('/admin');
 });
 
-app.get("/recent/:tag", function(req, res){
-	var tag = req.params.tag;
-	if(!tag) {
+app.post("/recent", function(req, res){
+	// Get tag...
+	var tag = req.body.recent.tag;
+	// Check if tag was not blank...
+	if(tag) {
 		RECENT_PICTURES_TAG = tag;
 	}
+	// ...and then return back to the admin panel
 	res.redirect("/admin");
 });
 
