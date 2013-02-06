@@ -9,6 +9,9 @@ var express = require('express'),
 // Create server
 var app = express.createServer(express.logger());
 
+// This var is used to fetch recent pictures that will be displayed on /index
+var RECENT_PICTURES_TAG = "maestrosmaestros";
+
 app.set('view engine', 'jade');
 app.set('view options', {layout: false});
 app.set('views', __dirname + '/views');
@@ -46,7 +49,7 @@ Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
 app.get('/', function(req, res) {
 	var instagrams = {};
 	Instagram.tags.recent({
-		name: 'cats',
+		name: RECENT_PICTURES_TAG,
 		complete: function(result, pagination) {
 			result.forEach(function(item){
 				instagrams[item.id] = item.images.standard_resolution.url;
@@ -135,6 +138,14 @@ app.get('/unsubscribe/:subscriptionID', function(req,res){
 		Instagram.subscriptions.unsubscribe({ id: subscriptionID });
 	}
 	res.redirect('/admin');
+});
+
+app.get("/recent/:tag", function(req, res){
+	var tag = req.params.tag;
+	if(!tag) {
+		RECENT_PICTURES_TAG = tag;
+	}
+	res.redirect("/admin");
 });
 
 var port = process.env.PORT || 5000;

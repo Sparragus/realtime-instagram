@@ -9,11 +9,11 @@ head
 		var socket = io.connect('http://sparragus-test.herokuapp.com');
 		socket.on('new_pictures', function (data) {
 			console.log(data);
-			$(document.body).prepend("<img src=\"" + data + "\">");
+			$("#pictures").prepend("<img src=\"" + data + "\">");
 		});
 body
 	#container
-		h1 Instagram Pictures
+		//- h1 Instagram Pictures
 		#pictures	
 			each instagramURL, instagramID in instagrams
 				li
