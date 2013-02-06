@@ -9,18 +9,15 @@ html(lang='en')
 		each tagId, tag in subscriptions
 			li= tag
 				a(href="/unsubscribe/#{tagId}") delete?
+		br
 		form(name="input", action="/subscribe", method="post")
-			| New tag:
+			| Tag:
 			input(type="text", name="subscription[tag]")
 			input(type="submit", value="Add new subscription")
 
-		form(name="input", action="/recent", method="post")
-			| Change recent pictures:
-			input(type="text", name="recent[tag]")
-			input(type="submit", value="Change")
 
-		//- h2 Most recent pictures:
-		//- each pictureURL, pictureId in pictures
-		//- 	li 
-		//- 		img(src=pictureURL)
-		//- 		a(href="#delete-#{pictureId}") delete?
+		h2 Recent pictures
+		form(name="input", action="/recent", method="post")
+			| Tag:
+			input(type="text", name="recent[tag]")
+			input(type="submit", value="Change recent pictures")
