@@ -117,7 +117,7 @@ app.post('/callback/realtime', function(req, res){
 					name: tag,
 					complete: function(data, pagination){
 						// And finally tell the world about it...
-						var most_recent_picture_url = data[0].images.low_resolution.url;
+						var most_recent_picture_url = data[0].images.standard_resolution.url;
 						io.sockets.emit('new_pictures', most_recent_picture_url);
 					}
 				});
