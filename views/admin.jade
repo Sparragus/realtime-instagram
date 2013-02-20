@@ -25,6 +25,9 @@ html(lang='en')
 		h2 Image Resolution
 		form(name="input", action="/resolution", method="get")
 			| Resolution:
-			input(type="radio" name="resolution" value="standard") Standard Resolution
-			input(type="radio" name="resolution" value="low") Low Resolution
+			br
+			| Standard
+			input(type="radio", name="resolution", value="standard", checked=true)
+			| Low
+			input(type="radio", name="resolution", value="low")
 			input(type="submit", value="Save")
