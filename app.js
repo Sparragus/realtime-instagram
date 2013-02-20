@@ -11,6 +11,7 @@ var app = express.createServer(express.logger());
 
 // This var is used to fetch recent pictures that will be displayed on /index
 var RECENT_PICTURES_TAG = "maestrosmaestros";
+var STANDARD_RESOLUTION = true;
 
 app.set('view engine', 'jade');
 app.set('view options', {layout: false});
@@ -52,7 +53,8 @@ app.get('/', function(req, res) {
 		name: RECENT_PICTURES_TAG,
 		complete: function(result, pagination) {
 			result.forEach(function(item){
-				instagrams[item.id] = item.images.standard_resolution.url;
+
+				instagrams[item.id] = STANDARD_RESOLUTION ? item.images.standard_resolution.url : item.images.low_resolution.url;
 			});
 
 			res.render("index", {
@@ -117,7 +119,7 @@ app.post('/callback/realtime', function(req, res){
 					name: tag,
 					complete: function(data, pagination){
 						// And finally tell the world about it...
-						var most_recent_picture_url = data[0].images.standard_resolution.url;
+						var most_recent_picture_url = STANDARD_RESOLUTION ? data[0].images.standard_resolution.url : data[0].images.low_resolution.url;
 						io.sockets.emit('new_pictures', most_recent_picture_url);
 					}
 				});
@@ -146,6 +148,21 @@ app.post("/recent", function(req, res){
 	// Check if tag was not blank...
 	if(tag) {
 		RECENT_PICTURES_TAG = tag;
+	}
+	// ...and then return back to the admin panel
+	res.redirect("/admin");
+});
+
+
+app.post("/resolution", function(req, res){
+	// Get tag...
+	var resolution = req.body.resolution;
+	// Check if tag was not blank...
+	if(resolution == "standard") {
+		STANDARD_RESOLUTION = true;
+	}
+	else {
+		STANDARD_RESOLUTION = false;
 	}
 	// ...and then return back to the admin panel
 	res.redirect("/admin");
