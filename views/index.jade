@@ -9,7 +9,8 @@ head
 		var socket = io.connect('http://sparragus-test.herokuapp.com');
 		socket.on('new_pictures', function (data) {
 			console.log(data);
-			$("#pictures").prepend("<img src=\"" + data + "\">").addClass("instagramPic").click(function(){$(this).hide();});
+			$("#pictures").prepend("<img src=\"" + data + "\">").addClass("instagramPic");
+			$(".instagramPic").first().click(function(){$(this).hide();});
 		});
 	//- script
 	//- 	$(".instagramPic").click(function() {
