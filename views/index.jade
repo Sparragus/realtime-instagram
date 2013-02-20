@@ -12,7 +12,7 @@ head
 			$("#pictures").prepend("<img src=\"" + data + "\">");
 		});
 	//- script
-	//- 	$("instagramPic").click(function() {
+	//- 	$(".instagramPic").click(function() {
 	//- 		$(this).hide();
 	//- 	})
 body
@@ -21,4 +21,8 @@ body
 		#pictures	
 			each instagramURL, instagramID in instagrams
 				li
-					img(class="instagramPic" src="#{instagramURL}")
+					img.instagramPic(src="#{instagramURL}")
+	script
+		$(".instagramPic").click(function() {
+			$(this).hide();
+		})

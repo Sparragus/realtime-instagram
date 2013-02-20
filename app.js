@@ -30,11 +30,11 @@ io.configure(function () {
 });
 
 // DB Params
-var dbUser = 'sparragus',
-	dbPassword = 'sparragus',
-	dbPort = 10059,
-	dbName = 'app11400957',
-	host = format("mongodb://%s:%s@linus.mongohq.com:%d/%s", dbUser, dbPassword, dbPort, dbName);
+// var dbUser = 'sparragus',
+// 	dbPassword = 'sparragus',
+// 	dbPort = 10059,
+// 	dbName = 'app11400957',
+// 	host = format("mongodb://%s:%s@linus.mongohq.com:%d/%s", dbUser, dbPassword, dbPort, dbName);
 
 // Set Instagram keys and global callback url.
 Instagram.set('client_id', '1e6e75e94695423285b11b68181bf5e6');
