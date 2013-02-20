@@ -11,10 +11,14 @@ head
 			console.log(data);
 			$("#pictures").prepend("<img src=\"" + data + "\">");
 		});
+	//- script
+	//- 	$("instagramPic").click(function() {
+	//- 		$(this).hide();
+	//- 	})
 body
 	#container
 		//- h1 Instagram Pictures
 		#pictures	
 			each instagramURL, instagramID in instagrams
 				li
-					img(src="#{instagramURL}")
+					img(class="instagramPic" src="#{instagramURL}")
