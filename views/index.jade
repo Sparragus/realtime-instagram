@@ -8,16 +8,23 @@ head
 	script
 		var socket = io.connect('http://sparragus-test.herokuapp.com');
 		socket.on('new_pictures', function (data) {
-			console.log(data);
-			$("#pictures").prepend("<img class=\"instagramPic\" src=\"" + data + "\">");
-			$(".instagramPic").first().click(function(){
+			//- console.log(data);
+			
+			//- Create image element
+			var img = document.createElement("img");
+			img.src = data;
+			img.className = "instagramPic";
+			
+			//- Add click event (hides the pic)
+			$(img).click(function(){
 				$(this).hide();
 			});
+
+			//- Display picture
+			$("#pictures").prepend(img);
+
 		});
-	//- script
-	//- 	$(".instagramPic").click(function() {
-	//- 		$(this).hide();
-	//- 	})
+
 body
 	#container
 		//- h1 Instagram Pictures
