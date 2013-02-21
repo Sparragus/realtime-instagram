@@ -27,7 +27,7 @@ html(lang='en')
 			| Resolution:
 			br
 			| Standard
-			input(type="radio", name="resolution", value="standard", checked=true)
+			input(type="radio", name="resolution", value="standard", checked=standard_resolution==true)
 			| Low
-			input(type="radio", name="resolution", value="low")
+			input(type="radio", name="resolution", value="low", , checked=standard_resolution==false)
 			input(type="submit", value="Save")

@@ -75,7 +75,8 @@ app.get('/admin', function(req, res){
 			});
 			console.log(subscriptions);
 			res.render('admin', {
-				'subscriptions': subscriptions
+				'subscriptions': subscriptions,
+				'standard_resolution': STANDARD_RESOLUTION
 			});
 		}
 	});
