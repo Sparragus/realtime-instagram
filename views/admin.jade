@@ -19,7 +19,7 @@ html(lang='en')
 		h2 Recent pictures
 		form(name="input", action="/recent", method="post")
 			| Tag:
-			input(type="text", name="recent[tag]")
+			input(type="text", name="recent[tag]", value=recent_pics_tag)
 			input(type="submit", value="Change recent pictures")
 
 		h2 Image Resolution
