@@ -30,22 +30,10 @@ io.configure(function () {
 	io.set("polling duration", 10);
 });
 
-// DB Params
-// var dbUser = 'sparragus',
-// 	dbPassword = 'sparragus',
-// 	dbPort = 10059,
-// 	dbName = 'app11400957',
-// 	host = format("mongodb://%s:%s@linus.mongohq.com:%d/%s", dbUser, dbPassword, dbPort, dbName);
-
 // Set Instagram keys and global callback url.
 Instagram.set('client_id', '1e6e75e94695423285b11b68181bf5e6');
 Instagram.set('client_secret', 'c54e930a781844228bc7ec6060e73547');
-Instagram.set('callback_url', 'http://sparragus-test.herokuapp.com/callback');
-
-// REAL App credentials
-// Instagram.set('client_id', 'cf25f26e869c42c3aa5f91342e9803ed');
-// Instagram.set('client_secret', '6b0cde9607be45b2a934e68f4f409965');
-// Instagram.set('callback_url', 'http://tc-instagram.herokuapp.com/callback');
+Instagram.set('callback_url', 'http://realtime-instagram.herokuapp.com/callback');
 
 app.get('/', function(req, res) {
 	var instagrams = {};
@@ -90,7 +78,7 @@ app.post('/subscribe', function(req,res){
 	Instagram.subscriptions.subscribe({
 		object: 'tag',
 		object_id: tag,
-		callback_url: "http://sparragus-test.herokuapp.com/callback/realtime"
+		callback_url: "http://realtime-instagram.herokuapp.com/callback/realtime"
 	});
 
 	// ...and then return back to the admin panel
