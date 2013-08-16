@@ -33,7 +33,7 @@ io.configure(function () {
 // If a request for a removal of pic is received, broadcast to everyone
 io.sockets.on('connection', function (socket) {
   socket.on('remove-pic', function (id) {
-    	io.socket.broadcast.emit("remove-pic", id);
+    	socket.broadcast.emit("remove-pic", id);
   });
 });
 
