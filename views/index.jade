@@ -12,7 +12,8 @@ head
 			
 			//- Create image element
 			var img = document.createElement("img");
-			img.src = data;
+			img.src = data[url];
+			img.dataset.id = data[id];
 			img.className = "instagramPic";
 			
 			//- Add click event (hides the pic)
