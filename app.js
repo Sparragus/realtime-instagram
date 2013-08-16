@@ -31,8 +31,10 @@ io.configure(function () {
 });
 
 // If a request for a removal of pic is received, broadcast to everyone
-io.socket.on("remove-pic", function (id) {
-	io.socket.broadcast.emit("remove-pic", id);
+io.sockets.on('connection', function (socket) {
+  socket.on('remove-pic', function (id) {
+    	io.socket.broadcast.emit("remove-pic", id);
+  });
 });
 
 // Set Instagram keys and global callback url.
