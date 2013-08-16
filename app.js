@@ -10,8 +10,8 @@ var express = require('express'),
 var app = express.createServer(express.logger());
 
 // This var is used to fetch recent pictures that will be displayed on /index
-var RECENT_PICTURES_TAG = "maestrosmaestros";
-var STANDARD_RESOLUTION = true;
+var RECENT_PICTURES_TAG = "book";
+var STANDARD_RESOLUTION = false;
 
 app.set('view engine', 'jade');
 app.set('view options', {layout: false});
@@ -109,7 +109,7 @@ app.post('/callback/realtime', function(req, res){
 					name: tag,
 					complete: function(data, pagination){
 						// And finally tell the world about it...
-						var pic_id = Math.floor(Math.random() * 4096 + (+new Date());
+						var pic_id = Math.floor(Math.random() * 4096 + (+new Date()));
 						var most_recent_picture_url = STANDARD_RESOLUTION ? data[0].images.standard_resolution.url : data[0].images.low_resolution.url;
 						io.sockets.emit('new_pictures', most_recent_picture_url, pic_id);
 					}
