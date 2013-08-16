@@ -18,12 +18,17 @@ head
 			
 			//- Add click event (hides the pic)
 			$(img).click(function(){
+				socket.broadcast.emit('remove-pic', $(this).data("id"));
 				$(this).hide();
 			});
 
 			//- Display picture
 			$("#pictures").prepend(img);
 
+		});
+
+		socket.on('remove-pic' function (id) {
+			$('img[data-id=' + id + ']').hide();
 		});
 
 body
