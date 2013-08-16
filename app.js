@@ -109,9 +109,9 @@ app.post('/callback/realtime', function(req, res){
 					name: tag,
 					complete: function(data, pagination){
 						// And finally tell the world about it...
-						var pic_id = Math.floor(Math.random() * 4096 + 1);
+						var pic_id = Math.floor(Math.random() * 4096 + (+new Date());
 						var most_recent_picture_url = STANDARD_RESOLUTION ? data[0].images.standard_resolution.url : data[0].images.low_resolution.url;
-						io.sockets.emit('new_pictures', {url: most_recent_picture_url, id: pic_id});
+						io.sockets.emit('new_pictures', most_recent_picture_url, pic_id);
 					}
 				});
 			}

@@ -7,13 +7,13 @@ head
 	script(src="socket.io/socket.io.js")
 	script
 		var socket = io.connect('http://realtime-instagram.herokuapp.com');
-		socket.on('new_pictures', function (data) {
+		socket.on('new_pictures', function (url, id) {
 			//- console.log(data);
 			
 			//- Create image element
 			var img = document.createElement("img");
-			img.src = data[url];
-			img.dataset.id = data[id];
+			img.src = url;
+			img.dataset.id = id;
 			img.className = "instagramPic";
 			
 			//- Add click event (hides the pic)
