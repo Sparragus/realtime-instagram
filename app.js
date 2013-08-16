@@ -30,6 +30,11 @@ io.configure(function () {
 	io.set("polling duration", 10);
 });
 
+// If a request for a removal of pic is received, broadcast to everyone
+io.socket.on("remove-pic", function (id) {
+	io.socket.broadcast.emit("remove-pic", id);
+});
+
 // Set Instagram keys and global callback url.
 Instagram.set('client_id', '1e6e75e94695423285b11b68181bf5e6');
 Instagram.set('client_secret', 'c54e930a781844228bc7ec6060e73547');

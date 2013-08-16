@@ -18,8 +18,8 @@ head
 			
 			//- Add click event (hides the pic)
 			$(img).click(function(){
-				socket.broadcast.emit('remove-pic', $(this).data("id"));
 				$(this).hide();
+				socket.emit('remove-pic', $(this).data("id"));
 			});
 
 			//- Display picture
@@ -27,7 +27,7 @@ head
 
 		});
 
-		socket.on('remove-pic' function (id) {
+		socket.on('remove-pic', function (id) {
 			$('img[data-id=' + id + ']').hide();
 		});
 
